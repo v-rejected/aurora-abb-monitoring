@@ -1,0 +1,16 @@
+aurora:
+    address: 2
+    com_port: '/dev/serial/by-id/usb-FTDI_FT232R_USB_UART_A50285BI-if00-port0'
+influxdb:
+    host: 
+    port: 8086
+    user: 
+    password: 
+    db_name: 'ABBAuroraMonitoring'
+location:
+    city: 
+    country: 
+    time_zone: 
+    N:
+    E: 
+    
