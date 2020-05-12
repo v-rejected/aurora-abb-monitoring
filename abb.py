@@ -45,7 +45,7 @@ def AuroraRetry(connection ):
         if retryCount > 5:
             retry = False
         time.sleep(5)
-    city = LocationInfo(conf['location']['city'], conf['location']['country'], conf['location']['citime_zonety'], conf['location']['N'], conf['location']['E'])
+    city = LocationInfo(cfg['location']['city'], cfg['location']['country'], cfg['location']['time_zone'], cfg['location']['N'], cfg['location']['E'])
     s = sun(city.observer, date=datetime.datetime.utcnow().date())
     if datetime.datetime.utcnow() > s["sunset"]:
         s = sun(city.observer, date=datetime.datetime.utcnow().date()) + datetime.timedelta(days=1)

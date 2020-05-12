@@ -1,0 +1,11 @@
+version: '3.6'
+
+services:
+  monitoring:
+    build: .
+    container_name: Monitoring
+    restart: unless-stopped
+    volumes:
+      - /root/abb:/abb
+    devices:
+      - '/dev/ttyUSB0:/dev/ttyUSB0'
