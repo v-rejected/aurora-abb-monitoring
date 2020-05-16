@@ -7,6 +7,7 @@ import yaml
 import os
 import sys
 import time
+import pytz
 
 def load_config(config_file):
     path = os.path.join(script_dir, config_file)
@@ -18,7 +19,8 @@ def load_config(config_file):
     sys.exit(1)
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
-cfg = load_config('config.yml')
+cfg = load_config('.config.yml')
+utc=pytz.UTC
 
 def crate_json(measurement, tag, obj):
     output = []
@@ -47,15 +49,15 @@ def AuroraRetry(connection ):
         time.sleep(5)
     city = LocationInfo(cfg['location']['city'], cfg['location']['country'], cfg['location']['time_zone'], cfg['location']['N'], cfg['location']['E'])
     s = sun(city.observer, date=datetime.datetime.utcnow().date())
-    if datetime.datetime.utcnow() > s["sunset"]:
-        s = sun(city.observer, date=datetime.datetime.utcnow().date()) + datetime.timedelta(days=1)
+    if datetime.datetime.utcnow().replace(tzinfo=utc) > s["sunset"]:
+        s = sun(city.observer, date=datetime.datetime.utcnow().date() + datetime.timedelta(days=1))
     else:
         print('error')
         sys.exit(10)
     while not morning:
-        if datetime.datetime.utcnow() < s["sunrise"]:
+        if datetime.datetime.utcnow().replace(tzinfo=utc) < s["sunrise"]:
             time.sleep(300)
-        elif datetime.datetime.utcnow() >= s["sunrise"]:
+        elif datetime.datetime.utcnow().replace(tzinfo=utc) >= s["sunrise"]:
             morning = True
         else:
             print('something whent wrong')
@@ -75,6 +77,7 @@ def AuroraRetry(connection ):
 class ABBAuroraMonitoring ():
 
     def __init__(self, config):
+        """Initialize the sensor."""
         self.clientABB = AuroraSerialClient(config['aurora']['address'], config['aurora']['com_port'], parity="N", timeout=1)
         self.clientABB.connect()
         self.state()
@@ -118,6 +121,7 @@ class ABBAuroraMonitoring ():
 class WriteToInfluxDB():
 
     def __init__(self, config):
+        """Initialize the sensor."""
         self.clientDB = InfluxDBClient(config['influxdb']['host'], config['influxdb']['port'], config['influxdb']['user'], config['influxdb']['password'], config['influxdb']['db_name'])
         self.cratedb(config)
 
