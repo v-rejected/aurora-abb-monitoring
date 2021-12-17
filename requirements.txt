@@ -2,5 +2,5 @@ astral==2.1
 aurorapy==0.2.6
 DateTime==4.3
 influxdb==5.3.0
-PyYAML==5.3.1
+PyYAML==5.4
 sun==1.2.3
